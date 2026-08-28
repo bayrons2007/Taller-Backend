@@ -1,16 +1,10 @@
-import {
-	Body,
-	Controller,
-	Delete,
-	Get,
-	Param,
-	Patch,
-	Post,
-} from "@nestjs/common";
 
+//comparacion v2
+import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
 import { StudentsService } from "@/students/students.service";
 import { CreateStudentDto, UpdateStudentDto } from "@/students/students.dtos";
 import { PetsService } from "@/pets/pets.service";
+import { ApiResponse } from "@/shared/api-response"; // esto es lo que estandariza las respuestas 
 
 @Controller("api/students")
 export class StudentsController {
@@ -21,28 +15,32 @@ export class StudentsController {
 
 	@Get()
 	public findAll() {
-		return this.studentsService.findAll();
+		const data = this.studentsService.findAll();
+		return ApiResponse.success(data, "Lista obtenida con exito");
 	}
 
 	@Get(":id")
 	public findById(@Param("id") id: string) {
-		return this.studentsService.findById(id);
+		const data = this.studentsService.findById(id);
+		return ApiResponse.success(data, "Estudiante obtenido con exito");
 	}
 
 	@Post()
 	public create(@Body() body: CreateStudentDto) {
-		return this.studentsService.create(body);
+		const data = this.studentsService.create(body);
+		return ApiResponse.success(data, "Estudiante creado con exito", 201);
 	}
 
 	@Patch(":id")
 	public update(@Param("id") id: string, @Body() body: UpdateStudentDto) {
-		return this.studentsService.update(id, body);
+		const data = this.studentsService.update(id, body);
+		return ApiResponse.success(data, "Estudiante actualizado con exito");
 	}
 
 	@Delete(":id")
 	public delete(@Param("id") id: string) {
 		const deleted = this.studentsService.delete(id);
 		this.petsService.deleteAllForStudent(id);
-		return deleted;
+		return ApiResponse.success(deleted, "Estudiante eliminado con exito");
 	}
 }
