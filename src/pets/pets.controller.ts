@@ -10,6 +10,7 @@ import {
 
 import { PetsService } from "@/pets/pets.service";
 import { CreatePetDto, UpdatePetDto } from "@/pets/pets.dtos";
+import { ApiResponse } from "@/shared/api-response";
 
 @Controller("api/students/:studentId/pets")
 export class PetsController {
@@ -17,7 +18,8 @@ export class PetsController {
 
 	@Get()
 	public findAll(@Param("studentId") studentId: string) {
-		return this.petsService.findAllForStudent(studentId);
+		const pets = this.petsService.findAllForStudent(studentId);
+		return new ApiResponse(true, 200, "Mascotas del estudiante obtenidas con éxito", pets, null);
 	}
 
 	@Post()
@@ -25,7 +27,8 @@ export class PetsController {
 		@Param("studentId") studentId: string,
 		@Body() body: CreatePetDto,
 	) {
-		return this.petsService.create(studentId, body);
+		const newPet = this.petsService.create(studentId, body);
+		return new ApiResponse(true, 201, "Mascota creada con éxito", newPet, null);
 	}
 
 	@Patch(":petId")
@@ -34,7 +37,8 @@ export class PetsController {
 		@Param("petId") petId: string,
 		@Body() body: UpdatePetDto,
 	) {
-		return this.petsService.update(studentId, petId, body);
+		const updatedPet = this.petsService.update(studentId, petId, body);
+		return new ApiResponse(true, 200, "Mascota actualizada con éxito", updatedPet, null);
 	}
 
 	@Delete(":petId")
@@ -42,6 +46,7 @@ export class PetsController {
 		@Param("studentId") studentId: string,
 		@Param("petId") petId: string,
 	) {
-		return this.petsService.delete(studentId, petId);
+		const deletedPet = this.petsService.delete(studentId, petId);
+		return new ApiResponse(true, 200, "Mascota eliminada con éxito", deletedPet, null);
 	}
 }
